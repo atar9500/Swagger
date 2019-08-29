@@ -6,6 +6,7 @@ import navigationOptions, {
 } from './navigationOptions';
 import {COLOR} from 'react-native-material-ui';
 import {Input, Button} from 'react-native-elements';
+import {validateEmail} from '../../utils/loginUtils';
 
 const APP_NAME = 'Swagger';
 const LOGIN_SUBTITLE = 'Login';
@@ -14,7 +15,12 @@ const REGISTER_SUBTITLE = 'Register';
 class LoginRegisterScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      typedEmail: '',
+      typedPassword: '',
+      emailError: '',
+      passwordError: '',
+    };
   }
 
   static navigationOptions = navigationOptions;
@@ -29,6 +35,32 @@ class LoginRegisterScreen extends Component {
     }
   };
 
+  onEmailType = text => this.setState({typedEmail: text});
+
+  onPasswordType = text => this.setState({typedPassword: text});
+
+  onContinue = () => {
+    if (!validateEmail(this.state.typedEmail)) {
+      // EMAIL IS INVALID
+      this.setState({emailError: 'Invalid email address'});
+      return;
+    }
+    if (!validatePassword(this.state.typedPassword)) {
+      // PASSWROD IS INVALID
+      this.setState({passwordError: 'Password must contain 8-16 characters'});
+      return;
+    }
+    const {navigation} = this.props;
+    switch (navigation.getParam(NAVIGATION_PARAMS.VIEW_MODE)) {
+      case VIEW_MODE.LOGIN:
+        // Start the login
+        return;
+      case VIEW_MODE.REGISTER:
+        // Start the register
+        return;
+    }
+  };
+
   render() {
     return (
       <View style={styles.layout}>
@@ -37,36 +69,51 @@ class LoginRegisterScreen extends Component {
           placeholder="Email Address"
           icon="email"
           inputType="email-address"
+          onType={this.onEmailType}
+          value={this.state.typedEmail}
+          error={this.state.emailError}
         />
-        <TextField placeholder="Password" icon="lock" hideText={true} />
-        <ContinueButton title={this.getSubtitle()} />
+        <TextField
+          placeholder="Password"
+          icon="lock"
+          hideText={true}
+          onType={this.onPasswordType}
+          value={this.state.typedPassword}
+          error={this.state.passwordError}
+        />
+        <ContinueButton title={this.getSubtitle()} onPress={this.onContinue} />
       </View>
     );
   }
 }
 
-const TextField = React.memo(({placeholder, icon, inputType, hideText}) => (
-  <Input
-    inputContainerStyle={styles.inputContainerStyle}
-    containerStyle={styles.containerStyle}
-    leftIcon={{
-      name: icon,
-      type: 'material-community',
-      color: COLOR.white,
-      size: 18,
-    }}
-    secureTextEntry={hideText}
-    inputStyle={styles.inputStyle}
-    autoFocus={false}
-    keyboardType={inputType}
-    errorStyle={styles.inputErrorStyle}
-    autoCorrect={false}
-    blurOnSubmit={false}
-    placeholderTextColor={COLOR.grey200}
-    placeholder={placeholder}
-    selectionColor={COLOR.white}
-  />
-));
+const TextField = React.memo(
+  ({placeholder, icon, inputType, hideText, onType, error, value}) => (
+    <Input
+      inputContainerStyle={styles.inputContainerStyle}
+      containerStyle={styles.containerStyle}
+      leftIcon={{
+        name: icon,
+        type: 'material-community',
+        color: COLOR.white,
+        size: 18,
+      }}
+      secureTextEntry={hideText}
+      inputStyle={styles.inputStyle}
+      autoFocus={false}
+      keyboardType={inputType}
+      errorStyle={styles.inputErrorStyle}
+      autoCorrect={false}
+      blurOnSubmit={false}
+      placeholderTextColor={COLOR.grey200}
+      placeholder={placeholder}
+      selectionColor={COLOR.white}
+      onChangeText={onType}
+      errorMessage={error}
+      value={value}
+    />
+  ),
+);
 
 const ContinueButton = React.memo(({title, onPress}) => (
   <Button
@@ -105,7 +152,10 @@ const styles = StyleSheet.create({
   inputErrorStyle: {
     marginTop: 0,
     textAlign: 'center',
-    color: COLOR.red300,
+    fontWeight: 'bold',
+    fontSize: 12,
+    padding: 4,
+    color: COLOR.red600,
   },
   appTitle: {
     fontSize: 48,
