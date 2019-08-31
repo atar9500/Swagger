@@ -4,4 +4,4 @@ export const validateEmail = email => {
 };
 
 export const validatePassword = password =>
-  !!password && password.length >= 8 && password <= 16;
+  !!password && password.length >= 8 && password.length <= 16;

@@ -1,16 +1,29 @@
 import React, {Component} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, ActivityIndicator} from 'react-native';
+import {connect} from 'react-redux';
 import navigationOptions, {
   NAVIGATION_PARAMS,
   VIEW_MODE,
 } from './navigationOptions';
 import {COLOR} from 'react-native-material-ui';
 import {Input, Button} from 'react-native-elements';
-import {validateEmail} from '../../utils/loginUtils';
+import {validateEmail, validatePassword} from '../../utils/loginUtils';
+import {
+  selectUserToken,
+  selectLoginError,
+  selectErrorMessage,
+  selectIsLogin,
+} from '../../redux/reducers/userReducer';
+import {createStructuredSelector} from 'reselect';
+import {loginUser, registerUser} from '../../redux/actions';
+import Modal from 'react-native-modal';
+import {ROUTES} from '../../routes';
 
 const APP_NAME = 'Swagger';
 const LOGIN_SUBTITLE = 'Login';
 const REGISTER_SUBTITLE = 'Register';
+const LOGIN_LOADING_TEXT = 'Logging you in...';
+const REGISTER_LOADING_TEXT = 'Registering...';
 
 class LoginRegisterScreen extends Component {
   constructor(props) {
@@ -20,10 +33,25 @@ class LoginRegisterScreen extends Component {
       typedPassword: '',
       emailError: '',
       passwordError: '',
+      requestSent: false,
     };
   }
 
   static navigationOptions = navigationOptions;
+
+  static getDerivedStateFromProps(props, state) {
+    if (props.isError && state.requestSent) {
+      return {passwordError: props.errorMessage, requestSent: false};
+    }
+    return null;
+  }
+
+  componentDidUpdate() {
+    const {navigation} = this.props;
+    if (this.props.isLogin) {
+      navigation.replace(ROUTES.HOME);
+    }
+  }
 
   getSubtitle = () => {
     const {navigation} = this.props;
@@ -35,35 +63,49 @@ class LoginRegisterScreen extends Component {
     }
   };
 
-  onEmailType = text => this.setState({typedEmail: text});
+  getLoadingText = () => {
+    const {navigation} = this.props;
+    switch (navigation.getParam(NAVIGATION_PARAMS.VIEW_MODE)) {
+      case VIEW_MODE.LOGIN:
+        return LOGIN_LOADING_TEXT;
+      case VIEW_MODE.REGISTER:
+        return REGISTER_LOADING_TEXT;
+    }
+  };
 
-  onPasswordType = text => this.setState({typedPassword: text});
+  onEmailType = text => this.setState({typedEmail: text, emailError: ''});
+
+  onPasswordType = text =>
+    this.setState({typedPassword: text, passwordError: ''});
 
   onContinue = () => {
     if (!validateEmail(this.state.typedEmail)) {
-      // EMAIL IS INVALID
       this.setState({emailError: 'Invalid email address'});
       return;
     }
     if (!validatePassword(this.state.typedPassword)) {
-      // PASSWROD IS INVALID
       this.setState({passwordError: 'Password must contain 8-16 characters'});
       return;
     }
-    const {navigation} = this.props;
+    const {navigation, login, register} = this.props;
     switch (navigation.getParam(NAVIGATION_PARAMS.VIEW_MODE)) {
       case VIEW_MODE.LOGIN:
-        // Start the login
-        return;
+        login(this.state.typedEmail, this.state.typedPassword);
+        break;
       case VIEW_MODE.REGISTER:
-        // Start the register
-        return;
+        register(this.state.typedEmail, this.state.typedPassword);
+        break;
     }
+    this.setState({requestSent: true, emailError: '', passwordError: ''});
   };
 
   render() {
     return (
       <View style={styles.layout}>
+        <Loading
+          visible={this.state.requestSent}
+          text={this.getLoadingText()}
+        />
         <Text style={styles.appTitle}>{APP_NAME}</Text>
         <TextField
           placeholder="Email Address"
@@ -125,6 +167,19 @@ const ContinueButton = React.memo(({title, onPress}) => (
   />
 ));
 
+const Loading = React.memo(({visible, text}) => (
+  <Modal
+    style={{margin: 0}}
+    isVisible={visible}
+    animationIn="fadeIn"
+    animationOut="fadeOut">
+    <View style={styles.loading}>
+      <ActivityIndicator size="large" color={COLOR.white} />
+      <Text style={styles.loadingText}>{text}</Text>
+    </View>
+  </Modal>
+));
+
 const styles = StyleSheet.create({
   layout: {
     flex: 1,
@@ -155,7 +210,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 12,
     padding: 4,
-    color: COLOR.red600,
+    color: COLOR.white,
   },
   appTitle: {
     fontSize: 48,
@@ -172,6 +227,33 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     width: 260,
   },
+  loadingModal: {margin: 0},
+  loading: {
+    flex: 1,
+    backgroundColor: COLOR.blue400,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  loadingText: {
+    marginTop: 8,
+    color: COLOR.white,
+    fontSize: 18,
+  },
 });
 
-export default LoginRegisterScreen;
+const mapStateToProps = createStructuredSelector({
+  userToken: selectUserToken,
+  isError: selectLoginError,
+  errorMessage: selectErrorMessage,
+  isLogin: selectIsLogin,
+});
+
+const mapDispatchToProps = dispatch => ({
+  login: (email, password) => dispatch(loginUser(email, password)),
+  register: (email, password) => dispatch(registerUser(email, password)),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(LoginRegisterScreen);
