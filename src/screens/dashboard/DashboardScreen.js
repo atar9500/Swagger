@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import {View, Text, StyleSheet, StatusBar} from 'react-native';
 import navigationOptions from './navigationOptions';
 import {COLOR} from 'react-native-material-ui';
+import {Icon} from 'react-native-elements';
+import Fab from '../../components/Fab';
 
 class DashboardScreen extends Component {
   constructor(props) {
@@ -11,11 +13,18 @@ class DashboardScreen extends Component {
 
   static navigationOptions = navigationOptions;
 
+  addPost = () => {};
+
   render() {
     return (
       <View style={styles.layout}>
         <StatusBar barStyle="dark-content" backgroundColor={COLOR.white} />
-        <Text> DashboardScreen </Text>
+        <Fab
+          name="image-plus"
+          type="material-community"
+          color={COLOR.blue400}
+          onPress={this.addPost}
+        />
       </View>
     );
   }

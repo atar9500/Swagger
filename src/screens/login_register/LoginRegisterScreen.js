@@ -11,7 +11,7 @@ import {validateEmail, validatePassword} from '../../utils/loginUtils';
 import {
   selectUserToken,
   selectLoginError,
-  selectErrorMessage,
+  selectLoginErrorMessage,
   selectIsLogin,
 } from '../../redux/reducers/userReducer';
 import {createStructuredSelector} from 'reselect';
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = createStructuredSelector({
   userToken: selectUserToken,
   isError: selectLoginError,
-  errorMessage: selectErrorMessage,
+  errorMessage: selectLoginErrorMessage,
   isLogin: selectIsLogin,
 });
 

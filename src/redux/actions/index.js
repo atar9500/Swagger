@@ -9,3 +9,8 @@ export const registerUser = (email, password) => ({
   type: ACTIONS.REGISTER_USER,
   payload: {email: email, password: password},
 });
+
+export const getAllPosts = token => ({
+  type: ACTIONS.GET_ALL_POSTS,
+  payload: {token: token},
+});

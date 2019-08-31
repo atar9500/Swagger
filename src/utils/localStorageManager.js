@@ -4,6 +4,7 @@ const FILE_NAME = 'localStorageManager';
 
 const KEYS = {
   USER_DATA: 'user_data',
+  POSTS: 'posts',
 };
 
 export const saveUserData = async data => {
@@ -11,6 +12,14 @@ export const saveUserData = async data => {
     await AsyncStorage.setItem(KEYS.USER_DATA, JSON.stringify(data));
   } catch (error) {
     console.error(`${FILE_NAME}.saveUserData: ${error}`);
+  }
+};
+
+export const savePosts = async posts => {
+  try {
+    await AsyncStorage.setItem(KEYS.POSTS, JSON.stringify(posts));
+  } catch (error) {
+    console.error(`${FILE_NAME}.savePosts: ${error}`);
   }
 };
 
@@ -39,6 +48,14 @@ const getItem = async key => {
     return savedItem;
   } catch (error) {
     console.error(`${FILE_NAME}.getItem: ${error}`);
+  }
+};
+
+const clearSavedData = async () => {
+  try {
+    await AsyncStorage.clear();
+  } catch (error) {
+    console.log(`${FILE_NAME}.clearSavedData: ${error}`);
   }
 };
 

@@ -23,7 +23,7 @@ const userMiddleware = store => next => action => {
           action.payload = data;
           next(action);
         })
-        .catch(error => {
+        .catch(() => {
           action.payload = {
             isError: true,
             errorMessage: 'Something went wrong, please try again',
@@ -37,7 +37,7 @@ const userMiddleware = store => next => action => {
           action.payload = data;
           next(action);
         })
-        .catch(error => {
+        .catch(() => {
           action.payload = {
             isError: true,
             errorMessage: 'Something went wrong, please try again',

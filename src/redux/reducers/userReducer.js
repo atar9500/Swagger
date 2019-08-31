@@ -43,6 +43,11 @@ const userReducer = (state = DEFAULT_STATE, action) => {
     case ACTIONS.LOGIN_USER:
     case ACTIONS.REGISTER_USER:
       return Object.assign({}, state, payload);
+    case ACTIONS.GET_ALL_POSTS:
+      if (payload.unauthoried) {
+        return DEFAULT_STATE;
+      }
+      return state;
     default:
       return state;
   }
@@ -73,7 +78,7 @@ export const selectLoginError = createSelector(
   selectUserReducer,
   ({isError}) => isError,
 );
-export const selectErrorMessage = createSelector(
+export const selectLoginErrorMessage = createSelector(
   selectUserReducer,
   ({errorMessage}) => errorMessage,
 );
