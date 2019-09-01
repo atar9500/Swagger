@@ -4,6 +4,7 @@ import InitialScreen from '../screens/initial/InitialScreen';
 import LoginRegisterScreen from '../screens/login_register/LoginRegisterScreen';
 import LoadingScreen from '../screens/loading/LoadingScreen';
 import DashboardScreen from '../screens/dashboard/DashboardScreen';
+import AddPostScreen from '../screens/add_post/AddPostScreen';
 import {createMaterialBottomTabNavigator} from 'react-navigation-material-bottom-tabs';
 import {COLOR} from 'react-native-material-ui';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -13,6 +14,7 @@ export const ROUTES = {
   INITIAL: 'Initial',
   LOGIN_REGISTER: 'LoginRegister',
   DASHBOARD: 'Dashboard',
+  ADD_POST: 'add_post',
   HOME: 'Home',
 };
 
@@ -66,8 +68,11 @@ const AppNavigator = createStackNavigator(
     [ROUTES.HOME]: {
       screen: HomeNavigator,
     },
+    [ROUTES.ADD_POST]: {
+      screen: AddPostScreen,
+    },
   },
-  {navigationOptions: {header: null}, initialRouteName: ROUTES.HOME},
+  {navigationOptions: {header: null}, initialRouteName: ROUTES.ADD_POST},
 );
 
 export default createAppContainer(AppNavigator);

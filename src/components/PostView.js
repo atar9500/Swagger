@@ -1,7 +1,9 @@
 import React, {PureComponent} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
+import {Card} from 'react-native-elements';
 import FastImage from 'react-native-fast-image';
 import {COLOR} from 'react-native-material-ui';
+import PropTypes from 'prop-types';
 
 class PostView extends PureComponent {
   constructor(props) {
@@ -15,33 +17,38 @@ class PostView extends PureComponent {
   };
 
   render() {
-    const {title, uri} = this.props;
+    const {
+      postId,
+      title,
+      imageUrl,
+      userId,
+      createdAt,
+      updatedAt,
+      isMyPost,
+    } = this.props;
     return (
-      <View style={styles.layout} onLayout={this.onLayout}>
-        <Text style={styles.title}>{title}</Text>
-        <FastImage
-          style={[
-            styles.image,
-            {width: this.state.imageSize, height: this.state.imageSize},
-          ]}
-          source={{
-            uri: uri,
-          }}
-          resizeMode={FastImage.resizeMode.contain}
-        />
-      </View>
+      <Card
+        title={title}
+        titleStyle={styles.title}
+        containerStyle={styles.layout}>
+        <View style={styles.imageWrapper} onLayout={this.onLayout}>
+          <FastImage
+            style={{
+              width: this.state.imageSize,
+              height: this.state.imageSize,
+            }}
+            source={{uri: imageUrl}}
+            resizeMode={FastImage.resizeMode.contain}
+          />
+        </View>
+      </Card>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  layout: {
-    width: '100%',
-    flexDirection: 'column',
-  },
-  image: {
-    backgroundColor: 'red',
-  },
+  layout: {flex: 1, flexDirection: 'column', borderRadius: 8},
+  imageWrapper: {width: '100%'},
   title: {
     color: COLOR.grey900,
     fontWeight: 'bold',
@@ -49,5 +56,15 @@ const styles = StyleSheet.create({
     margin: 16,
   },
 });
+
+PostView.propTypes = {
+  postId: PropTypes.number,
+  title: PropTypes.string,
+  imageUrl: PropTypes.string,
+  userId: PropTypes.number,
+  createdAt: PropTypes.string,
+  updatedAt: PropTypes.string,
+  isMyPost: PropTypes.bool,
+};
 
 export default PostView;

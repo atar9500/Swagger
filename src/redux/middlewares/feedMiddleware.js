@@ -1,5 +1,5 @@
 import ACTIONS from '../actions/types';
-import {getAllPosts} from '../../api/feedApi';
+import {getFeed} from '../../api/feedApi';
 
 /**
  * ACTIONS.GET_ALL_POSTS: payload should be: 
@@ -12,7 +12,7 @@ const feedMiddleware = store => next => action => {
   const {payload, type} = action;
   switch (type) {
     case ACTIONS.GET_ALL_POSTS:
-      getAllPosts(payload.token)
+      getFeed(payload.token)
         .then(data => {
           action.payload = data;
           next(action);

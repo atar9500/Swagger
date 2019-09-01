@@ -35,15 +35,15 @@ const feedReducer = (state = DEFAULT_STATE, action) => {
 
 const selectFeedReducer = ({feedReducer}) => feedReducer;
 export const selectPosts = createSelector(
-  feedReducer,
+  selectFeedReducer,
   ({posts}) => posts,
 );
 export const selectFeedError = createSelector(
-  feedReducer,
+  selectFeedReducer,
   ({isError}) => isError,
 );
 export const selectFeedErrorMessage = createSelector(
-  feedReducer,
+  selectFeedReducer,
   ({errorMessage}) => errorMessage,
 );
 
