@@ -72,7 +72,7 @@ const AppNavigator = createStackNavigator(
       screen: AddPostScreen,
     },
   },
-  {navigationOptions: {header: null}, initialRouteName: ROUTES.ADD_POST},
+  {navigationOptions: {header: null}},
 );
 
 export default createAppContainer(AppNavigator);

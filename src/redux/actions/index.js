@@ -14,3 +14,8 @@ export const getAllPosts = token => ({
   type: ACTIONS.GET_ALL_POSTS,
   payload: {token: token},
 });
+
+export const addPost = (token, title, url) => ({
+  type: ACTIONS.ADD_POST,
+  payload: {token: token, title: title, url: url},
+});

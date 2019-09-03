@@ -1,8 +1,8 @@
 import React, {PureComponent} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import {Card} from 'react-native-elements';
 import FastImage from 'react-native-fast-image';
 import {COLOR} from 'react-native-material-ui';
+import {Card} from 'react-native-elements';
 import PropTypes from 'prop-types';
 
 class PostView extends PureComponent {
@@ -27,17 +27,15 @@ class PostView extends PureComponent {
       isMyPost,
     } = this.props;
     return (
-      <Card
-        title={title}
-        titleStyle={styles.title}
-        containerStyle={styles.layout}>
+      <Card containerStyle={styles.layout}>
+        <Text style={styles.title}>{title}</Text>
         <View style={styles.imageWrapper} onLayout={this.onLayout}>
           <FastImage
             style={{
               width: this.state.imageSize,
               height: this.state.imageSize,
             }}
-            source={{uri: imageUrl}}
+            source={{uri: imageUrl, priority: FastImage.priority.normal}}
             resizeMode={FastImage.resizeMode.contain}
           />
         </View>
@@ -47,7 +45,15 @@ class PostView extends PureComponent {
 }
 
 const styles = StyleSheet.create({
-  layout: {flex: 1, flexDirection: 'column', borderRadius: 8},
+  layout: {
+    flex: 1,
+    flexDirection: 'column',
+    borderRadius: 8,
+    borderColor: COLOR.grey400,
+    backgroundColor: COLOR.white,
+    margin: 16,
+    padding: 0,
+  },
   imageWrapper: {width: '100%'},
   title: {
     color: COLOR.grey900,

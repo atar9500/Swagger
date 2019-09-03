@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
-import {View, Text, StyleSheet, ActivityIndicator} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import {connect} from 'react-redux';
 import navigationOptions, {
   NAVIGATION_PARAMS,
   VIEW_MODE,
 } from './navigationOptions';
 import {COLOR} from 'react-native-material-ui';
-import {Input, Button} from 'react-native-elements';
+import {Button} from 'react-native-elements';
 import {validateEmail, validatePassword} from '../../utils/loginUtils';
 import {
   selectUserToken,
@@ -16,8 +16,9 @@ import {
 } from '../../redux/reducers/userReducer';
 import {createStructuredSelector} from 'reselect';
 import {loginUser, registerUser} from '../../redux/actions';
-import Modal from 'react-native-modal';
 import {ROUTES} from '../../routes';
+import TextField from '../../components/TextField';
+import LoadingModal from '../../components/LoadingModal';
 
 const APP_NAME = 'Swagger';
 const LOGIN_SUBTITLE = 'Login';
@@ -102,9 +103,11 @@ class LoginRegisterScreen extends Component {
   render() {
     return (
       <View style={styles.layout}>
-        <Loading
+        <LoadingModal
           visible={this.state.requestSent}
           text={this.getLoadingText()}
+          backgroundColor={COLOR.blue400}
+          tintColor={COLOR.white}
         />
         <Text style={styles.appTitle}>{APP_NAME}</Text>
         <TextField
@@ -114,6 +117,8 @@ class LoginRegisterScreen extends Component {
           onType={this.onEmailType}
           value={this.state.typedEmail}
           error={this.state.emailError}
+          style={styles.inputStyle}
+          tintColor={COLOR.white}
         />
         <TextField
           placeholder="Password"
@@ -122,40 +127,14 @@ class LoginRegisterScreen extends Component {
           onType={this.onPasswordType}
           value={this.state.typedPassword}
           error={this.state.passwordError}
+          style={styles.inputStyle}
+          tintColor={COLOR.white}
         />
         <ContinueButton title={this.getSubtitle()} onPress={this.onContinue} />
       </View>
     );
   }
 }
-
-const TextField = React.memo(
-  ({placeholder, icon, inputType, hideText, onType, error, value}) => (
-    <Input
-      inputContainerStyle={styles.inputContainerStyle}
-      containerStyle={styles.containerStyle}
-      leftIcon={{
-        name: icon,
-        type: 'material-community',
-        color: COLOR.white,
-        size: 18,
-      }}
-      secureTextEntry={hideText}
-      inputStyle={styles.inputStyle}
-      autoFocus={false}
-      keyboardType={inputType}
-      errorStyle={styles.inputErrorStyle}
-      autoCorrect={false}
-      blurOnSubmit={false}
-      placeholderTextColor={COLOR.grey200}
-      placeholder={placeholder}
-      selectionColor={COLOR.white}
-      onChangeText={onType}
-      errorMessage={error}
-      value={value}
-    />
-  ),
-);
 
 const ContinueButton = React.memo(({title, onPress}) => (
   <Button
@@ -167,19 +146,6 @@ const ContinueButton = React.memo(({title, onPress}) => (
   />
 ));
 
-const Loading = React.memo(({visible, text}) => (
-  <Modal
-    style={{margin: 0}}
-    isVisible={visible}
-    animationIn="fadeIn"
-    animationOut="fadeOut">
-    <View style={styles.loading}>
-      <ActivityIndicator size="large" color={COLOR.white} />
-      <Text style={styles.loadingText}>{text}</Text>
-    </View>
-  </Modal>
-));
-
 const styles = StyleSheet.create({
   layout: {
     flex: 1,
@@ -188,29 +154,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLOR.blue400,
   },
   inputStyle: {
-    flex: 1,
-    marginLeft: 10,
-    color: COLOR.white,
-    fontSize: 16,
-  },
-  containerStyle: {
     marginBottom: 16,
     width: 280,
-  },
-  inputContainerStyle: {
-    paddingLeft: 8,
-    borderRadius: 40,
-    borderWidth: 1,
-    borderColor: COLOR.white,
-    height: 45,
-  },
-  inputErrorStyle: {
-    marginTop: 0,
-    textAlign: 'center',
-    fontWeight: 'bold',
-    fontSize: 12,
-    padding: 4,
-    color: COLOR.white,
   },
   appTitle: {
     fontSize: 48,
@@ -226,18 +171,6 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     marginBottom: 16,
     width: 260,
-  },
-  loadingModal: {margin: 0},
-  loading: {
-    flex: 1,
-    backgroundColor: COLOR.blue400,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  loadingText: {
-    marginTop: 8,
-    color: COLOR.white,
-    fontSize: 18,
   },
 });
 

@@ -7,7 +7,6 @@ import {createSelector} from 'reselect';
  *    posts: [],
       isError: false,
       errorMessage: '',
-
       // For userReducer use only!
       unauthorized: true
     }
@@ -17,6 +16,7 @@ const DEFAULT_STATE = {
   posts: [],
   isError: false,
   errorMessage: '',
+  unauthorized: false,
 };
 
 const feedReducer = (state = DEFAULT_STATE, action) => {
@@ -45,6 +45,10 @@ export const selectFeedError = createSelector(
 export const selectFeedErrorMessage = createSelector(
   selectFeedReducer,
   ({errorMessage}) => errorMessage,
+);
+export const selectFeedUnauthorized = createSelector(
+  selectFeedReducer,
+  ({unauthorized}) => unauthorized,
 );
 
 export default feedReducer;

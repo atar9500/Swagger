@@ -14,20 +14,35 @@ import {createStructuredSelector} from 'reselect';
 import {getAllPosts} from '../../redux/actions';
 import {selectUserToken} from '../../redux/reducers/userReducer';
 import {ROUTES} from '../../routes';
+import {NAVIGATION_PARAMS as ADD_POST_PARAMS} from '../add_post/navigationOptions';
 
 class DashboardScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {isRefreshing: false};
   }
 
   static navigationOptions = navigationOptions;
 
   componentDidMount() {
-    this.props.refreshFeed(this.props.userToken);
+    this.refreshFeed();
   }
 
-  addPost = () => this.props.navigation.navigate(ROUTES.ADD_POST);
+  componentDidUpdate(prevProps) {
+    if (this.props.posts !== prevProps.posts) {
+      this.setState({isRefreshing: false});
+    }
+  }
+
+  addPost = () =>
+    this.props.navigation.navigate(ROUTES.ADD_POST, {
+      [ADD_POST_PARAMS.REFRESH_FEED]: this.refreshFeed,
+    });
+
+  refreshFeed = () => {
+    this.props.refreshFeed(this.props.userToken);
+    this.setState({isRefreshing: true});
+  };
 
   renderPost = ({item}) => (
     <PostView
@@ -49,6 +64,8 @@ class DashboardScreen extends Component {
           style={styles.list}
           data={this.props.posts}
           renderItem={this.renderPost}
+          onRefresh={this.refreshFeed}
+          refreshing={this.state.isRefreshing}
         />
         <Fab
           name="image-plus"
