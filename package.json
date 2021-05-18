@@ -15,7 +15,7 @@
     "react": "16.8.6",
     "react-native": "0.60.5",
     "react-native-elements": "^1.1.0",
-    "react-native-fast-image": "^7.0.2",
+    "react-native-fast-image": "^8.3.0",
     "react-native-gesture-handler": "^1.4.1",
     "react-native-image-picker": "^1.1.0",
     "react-native-material-ui": "^1.30.1",
